@@ -73,6 +73,8 @@
     <Build Include="Tables\ActivityType.sql" />
     <Build Include="Tables\Environment.sql" />
     <Build Include="Tables\Classification.sql" />
+    <Build Include="Tables\Sprint.sql" />
+    <Build Include="Tables\SprintType.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Deployment\ProjectTracker.PostDeployment.sql" />

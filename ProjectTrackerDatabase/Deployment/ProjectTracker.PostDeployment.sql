@@ -89,3 +89,19 @@ insert into dbo.ActivityType values('Testing', 1, 'system', getdate(), null, nul
 
 
 
+
+delete from dbo.Sprint;
+dbcc checkident('dbo.Sprint', reseed, 0);
+
+insert into dbo.Sprint values('Sprint 1', '2022-01-01', '2022-02-01', 1, 'system', getdate(), null, null);
+
+
+
+delete from dbo.SprintType;
+dbcc checkident('dbo.SprintType', reseed, 0);
+
+insert into dbo.SprintType values('New', 1, 'system', getdate(), null, null);
+insert into dbo.SprintType values('Active', 1, 'system', getdate(), null, null);
+insert into dbo.SprintType values('Closed', 1, 'system', getdate(), null, null);
+
+

@@ -1,10 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectTrackerUI.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("ProjectTrackerConnection");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ProjectTrackerConnection")));
+    options.UseSqlServer(connectionString, builder =>
+
+        builder.EnableRetryOnFailure(3, TimeSpan.FromSeconds(2), null)
+    ));
+
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
@@ -22,6 +34,7 @@ if (!app.Environment.IsDevelopment())
 }
 else
 {
+    
     app.UseDeveloperExceptionPage();
     
 }
@@ -31,10 +44,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.MapRazorPages();
 app.Run();

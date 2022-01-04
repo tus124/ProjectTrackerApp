@@ -30,7 +30,7 @@ namespace ProjectTrackerUI.Models
         public string? ModifiedBy { get; set; }
 
         [Display(Name = "Modified Date")]
-        public DateTime ModifiedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
 
     }
 }

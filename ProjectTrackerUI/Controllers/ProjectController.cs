@@ -14,148 +14,145 @@ namespace ProjectTrackerUI.Controllers
     public class ProjectController : Controller
     {
         private readonly ApplicationDbContext _db;
-       // private readonly ILogger<ProjectController> _logger;
-        public ProjectController(ApplicationDbContext db)
+        private readonly ILogger<ProjectController> _logger;
+        public ProjectController(ILogger<ProjectController> logger, ApplicationDbContext db)
         {
-            //_logger = logger;  ILogger<ProjectController> logger, 
+            _logger = logger;
             _db = db;
         }
 
         // GET: Project
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
+        {           
+            return View(await _db.Project.ToListAsync());
+        }
+
+        // GET: Project/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            //return View(await _context.ProjectViewModel.ToListAsync());
-            IEnumerable<Project> projects = _db.Projects;
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-          //  var lists = _db.Projects.ToList();
-
+            var projects = await _db.Project
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (projects == null)
+            {
+                return NotFound();
+            }
 
             return View(projects);
         }
 
-        //// GET: Project/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: Project/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
 
-        //    var projectViewModel = await _db.ProjectViewModel
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (projectViewModel == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // POST: Project/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Active,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Project project)
+        {
+            if (ModelState.IsValid)
+            {
+                _db.Add(project);
+                await _db.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(project);
+        }
 
-        //    return View(projectViewModel);
-        //}
+        // GET: Project/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        //// GET: Project/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
+            var projects = await _db.Project.FindAsync(id);
+            if (projects == null)
+            {
+                return NotFound();
+            }
+            return View(projects);
+        }
 
-        //// POST: Project/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,Name,Description,Active,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Project projectViewModel)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(projectViewModel);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(projectViewModel);
-        //}
+        // POST: Project/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Active,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Project project)
+        {
+            if (id != project.Id)
+            {
+                return NotFound();
+            }
 
-        //// GET: Project/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    project.ModifiedBy = "";
+                    project.ModifiedDate = DateTime.Now;
 
-        //    var projectViewModel = await _context.ProjectViewModel.FindAsync(id);
-        //    if (projectViewModel == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(projectViewModel);
-        //}
+                    _db.Update(project);
+                    await _db.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ProjectExists(project.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(project);
+        }
 
-        //// POST: Project/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Active,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Project projectViewModel)
-        //{
-        //    if (id != projectViewModel.Id)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: Project/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(projectViewModel);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!ProjectViewModelExists(projectViewModel.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(projectViewModel);
-        //}
+            var projects = await _db.Project
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (projects == null)
+            {
+                return NotFound();
+            }
 
-        //// GET: Project/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+            return View(projects);
+        }
 
-        //    var projectViewModel = await _context.ProjectViewModel
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (projectViewModel == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // POST: Project/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var projects = await _db.Project.FindAsync(id);
+            _db.Project.Remove(projects);
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
 
-        //    return View(projectViewModel);
-        //}
-
-        //// POST: Project/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var projectViewModel = await _context.ProjectViewModel.FindAsync(id);
-        //    _context.ProjectViewModel.Remove(projectViewModel);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //private bool ProjectViewModelExists(int id)
-        //{
-        //    return _context.ProjectViewModel.Any(e => e.Id == id);
-        //}
+        private bool ProjectExists(int id)
+        {
+            return _db.Project.Any(e => e.Id == id);
+        }
     }
 }

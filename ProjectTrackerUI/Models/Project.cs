@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProjectTrackerUI.Models
 {
+    [Table("Project")]
     public class Project
     {
         [Key]

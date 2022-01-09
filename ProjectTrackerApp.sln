@@ -3,29 +3,35 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectTrackerAPI", "ProjectTrackerAPI\ProjectTrackerAPI.csproj", "{123FE20B-7076-449F-AF30-8DAC312179DD}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{5F9B388B-36C1-4B32-B91F-D03E3ED83D63}"
-EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ProjectTrackerDatabase", "ProjectTrackerDatabase\ProjectTrackerDatabase.sqlproj", "{951628F1-072F-41AE-9748-7BC4E82BDDE3}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{6D903EEB-5259-4691-9CB1-21ED948A4CEE}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectTrackerUI", "ProjectTrackerUI\ProjectTrackerUI.csproj", "{A82E5267-DAEF-4C62-9E3E-9E1E0B25FF43}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{29868715-EA80-4A6C-A854-0F0706B867A3}"
-EndProject
+
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F15516A0-6B0A-4CE2-A8C9-088767CB6F47}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{5F9B388B-36C1-4B32-B91F-D03E3ED83D63}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ProjectTrackerDatabase", "Database\ProjectTrackerDatabase.sqlproj", "{951628F1-072F-41AE-9748-7BC4E82BDDE3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{6D903EEB-5259-4691-9CB1-21ED948A4CEE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectTrackerUI", "UI\ProjectTrackerUI.csproj", "{A82E5267-DAEF-4C62-9E3E-9E1E0B25FF43}"
+EndProject
+
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{29868715-EA80-4A6C-A854-0F0706B867A3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectTrackerAPI", "API\ProjectTrackerAPI.csproj", "{123FE20B-7076-449F-AF30-8DAC312179DD}"
+EndProject
+
+
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAccess", "DataAccess", "{45A4B68C-2898-4B75-9D9F-C901295EA833}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectTrackerUI_2", "ProjectTrackerUI_2\ProjectTrackerUI_2.csproj", "{F1657E57-9152-4240-9FCF-55F3837CBA87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectTrackerDataAccess", "DataAccess\ProjectTrackerDataAccess.csproj", "{329B4791-852C-4FCB-9CDE-BC6855F5F7F2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessLayer", "DataAccess\DataAccessLayer.csproj", "{329B4791-852C-4FCB-9CDE-BC6855F5F7F2}"
-EndProject
+
+
+
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,10 +52,6 @@ Global
 		{A82E5267-DAEF-4C62-9E3E-9E1E0B25FF43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A82E5267-DAEF-4C62-9E3E-9E1E0B25FF43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A82E5267-DAEF-4C62-9E3E-9E1E0B25FF43}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F1657E57-9152-4240-9FCF-55F3837CBA87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F1657E57-9152-4240-9FCF-55F3837CBA87}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F1657E57-9152-4240-9FCF-55F3837CBA87}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F1657E57-9152-4240-9FCF-55F3837CBA87}.Release|Any CPU.Build.0 = Release|Any CPU
 		{329B4791-852C-4FCB-9CDE-BC6855F5F7F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{329B4791-852C-4FCB-9CDE-BC6855F5F7F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{329B4791-852C-4FCB-9CDE-BC6855F5F7F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -62,7 +64,6 @@ Global
 		{123FE20B-7076-449F-AF30-8DAC312179DD} = {29868715-EA80-4A6C-A854-0F0706B867A3}
 		{951628F1-072F-41AE-9748-7BC4E82BDDE3} = {5F9B388B-36C1-4B32-B91F-D03E3ED83D63}
 		{A82E5267-DAEF-4C62-9E3E-9E1E0B25FF43} = {6D903EEB-5259-4691-9CB1-21ED948A4CEE}
-		{F1657E57-9152-4240-9FCF-55F3837CBA87} = {6D903EEB-5259-4691-9CB1-21ED948A4CEE}
 		{329B4791-852C-4FCB-9CDE-BC6855F5F7F2} = {45A4B68C-2898-4B75-9D9F-C901295EA833}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

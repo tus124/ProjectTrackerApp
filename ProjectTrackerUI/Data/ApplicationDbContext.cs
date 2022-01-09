@@ -18,5 +18,7 @@ namespace ProjectTrackerUI.Data
         }
 
         public DbSet<Project> Project { get; set; }
+
+        public DbSet<Issue> Issue { get; set; }
     }
 }

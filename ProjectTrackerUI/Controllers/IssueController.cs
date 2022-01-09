@@ -1,90 +1,72 @@
 ﻿#nullable disable
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjectTrackerUI.Data;
 using ProjectTrackerUI.Models;
-using ProjectTrackerUI.Models.ViewModels;
 
 namespace ProjectTrackerUI.Controllers
 {
-    //[Authorize]
-    public class ProjectController : Controller
+    public class IssueController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        private readonly ILogger<ProjectController> _logger;
-        public ProjectController(ILogger<ProjectController> logger, ApplicationDbContext db)
+        private readonly ApplicationDbContext _context;
+
+        public IssueController(ApplicationDbContext context)
         {
-            _logger = logger;
-            _db = db;
+            _context = context;
         }
 
-        // GET: Project
+        // GET: Issue
         public async Task<IActionResult> Index()
-        {           
-            return View(await _db.Project.ToListAsync());
+        {
+            return View(await _context.Issue.ToListAsync());
         }
 
-        // GET: Project/Details/5
+        // GET: Issue/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-           
             if (id == null)
             {
                 return NotFound();
             }
 
-            var projects = await _db.Project
+            var issue = await _context.Issue
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (projects == null)
+            if (issue == null)
             {
                 return NotFound();
             }
-            var issues = await _db.Issue
-                .Where(p => p.ProjectId == id)
-                .Select(x => x)   //new { x.Id, x.Title, x.Description, x.StatusId, x.AssignedToId, x.SprintId, x.SprintTypeId }
-                .ToListAsync();
 
-            //dynamic myModel = new ExpandoObject();
-            //myModel.Projects = projects;
-            //myModel.Issues = issues;
-
-            var tupleModel = new Tuple<Project, List<Issue>>(projects, issues);
-
-
-
-            return View(tupleModel);
+            return View(issue);
         }
 
-        // GET: Project/Create
+        // GET: Issue/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Project/Create
+        // POST: Issue/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Active,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Project project)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,ProjectId,StatusId,AssignedToId,SprintId,SprintTypeId,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Issue issue)
         {
             if (ModelState.IsValid)
             {
-                _db.Add(project);
-                await _db.SaveChangesAsync();
+                _context.Add(issue);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(project);
+            return View(issue);
         }
 
-        // GET: Project/Edit/5
+        // GET: Issue/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -92,22 +74,22 @@ namespace ProjectTrackerUI.Controllers
                 return NotFound();
             }
 
-            var projects = await _db.Project.FindAsync(id);
-            if (projects == null)
+            var issue = await _context.Issue.FindAsync(id);
+            if (issue == null)
             {
                 return NotFound();
             }
-            return View(projects);
+            return View(issue);
         }
 
-        // POST: Project/Edit/5
+        // POST: Issue/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Active,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Project project)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,ProjectId,StatusId,AssignedToId,SprintId,SprintTypeId,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Issue issue)
         {
-            if (id != project.Id)
+            if (id != issue.Id)
             {
                 return NotFound();
             }
@@ -116,15 +98,12 @@ namespace ProjectTrackerUI.Controllers
             {
                 try
                 {
-                    project.ModifiedBy = "";
-                    project.ModifiedDate = DateTime.Now;
-
-                    _db.Update(project);
-                    await _db.SaveChangesAsync();
+                    _context.Update(issue);
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProjectExists(project.Id))
+                    if (!IssueExists(issue.Id))
                     {
                         return NotFound();
                     }
@@ -135,10 +114,10 @@ namespace ProjectTrackerUI.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(project);
+            return View(issue);
         }
 
-        // GET: Project/Delete/5
+        // GET: Issue/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -146,30 +125,30 @@ namespace ProjectTrackerUI.Controllers
                 return NotFound();
             }
 
-            var projects = await _db.Project
+            var issue = await _context.Issue
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (projects == null)
+            if (issue == null)
             {
                 return NotFound();
             }
 
-            return View(projects);
+            return View(issue);
         }
 
-        // POST: Project/Delete/5
+        // POST: Issue/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var projects = await _db.Project.FindAsync(id);
-            _db.Project.Remove(projects);
-            await _db.SaveChangesAsync();
+            var issue = await _context.Issue.FindAsync(id);
+            _context.Issue.Remove(issue);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProjectExists(int id)
+        private bool IssueExists(int id)
         {
-            return _db.Project.Any(e => e.Id == id);
+            return _context.Issue.Any(e => e.Id == id);
         }
     }
 }

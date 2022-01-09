@@ -1,60 +1,126 @@
-﻿@model ProjectTrackerUI.Models.Project
+﻿
+@model Tuple<Project, List<Issue>>
+
+
+@*
+@model ProjectTrackerUI.Models.Project
+@inject IEnumerable<ProjectTrackerUI.Models.Issue> Issues;*@
+
+
 
 @{
-    ViewData["Title"] = "Details";
+    ViewBag.Title = "Details";
 }
 
-<h1>Details</h1>
+<style>
+body {font-family: Arial;}
 
-<div>
-    <h4>ProjectViewModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Active)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Active)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedBy)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedBy)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ModifiedBy)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ModifiedBy)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ModifiedDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ModifiedDate)
-        </dd>
-    </dl>
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+</style>
+
+<script>
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+</script>
+
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'Features')">Features</button>
+  <button class="tablinks" onclick="openTab(event, 'Issues')">Issues</button>
+  <button class="tablinks" onclick="openTab(event, 'UserStories')">User Stories</button>
+ 
 </div>
+
+<div id="Features" class="tabcontent">
+  <h3>Features</h3>
+  <p>Test</p>
+</div>
+
+<div id="Issues" class="tabcontent">
+  <h3>Issues</h3>
+   <table class="table table-bordered table-striped" style="width:100%">
+           <thead>
+               <tr>
+                   <th><a asp-controller="Issue" asp-action="Create" class="btn btn-primary">+</a></th>
+                   <th>Id</th>
+                   <th>Title</th>
+                   <th>Status</th>
+                   <th>AssignedTo</th>
+               </tr>
+                
+           </thead>
+           <tbody>
+
+             @foreach(Issue item in Model.Item2 )
+               {
+                 <tr>
+                      <td width="20%">
+                            <a asp-controller="Issue" asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-primary">🖉</a>
+                            <a asp-controller="Issue" asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-danger">⌫</a>
+                       </td>
+                       <td width="20%">@item.Id</td>
+                       <td width="20%">@item.Title</td>
+                       <td width="20%">@item.StatusId</td>
+                       <td width="20%">@item.AssignedToId</td>
+                       
+                   </tr>
+               }
+           </tbody>
+  </table>
+</div>
+
+<div id="UserStories" class="tabcontent">
+  <h3>User Stories</h3>
+  <p>test</p>
+</div>
+
+<br />
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    
+    <a asp-action="Index">Back to Project List</a>
 </div>

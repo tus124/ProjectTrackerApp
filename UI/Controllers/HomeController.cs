@@ -15,7 +15,8 @@ namespace ProjectTrackerUI.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Project", new {  });  //View();
+           
         }
 
         public IActionResult Privacy()
@@ -26,7 +27,8 @@ namespace ProjectTrackerUI.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View();
+            //return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

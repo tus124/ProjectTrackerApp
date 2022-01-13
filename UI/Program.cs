@@ -1,27 +1,19 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DataAccessLayer.DbAccess;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using ProjectTrackerUI.Data;
+using ProjectTrackerDataAccess.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-var identityDbConnectionString = builder.Configuration.GetConnectionString("IdentityDbConnection");
-var logDbConnectionString = builder.Configuration.GetConnectionString("LogDbConnection");
-var connectionString = builder.Configuration.GetConnectionString("ProjectTrackerConnection");
 
-//Replace AddDbContext with AddDbContextPool because it enable DbContext pooling thus, it will not create a new instance every time but will check first if there are available instances in the pool and if there are, it will use one of those. 
-builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString, builder =>
-
-        builder.EnableRetryOnFailure(3, TimeSpan.FromSeconds(2), null)
-    ));
+var connectionString = builder.Configuration.GetConnectionString("Default");
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
+builder.Services.AddSingleton<IProjectData, ProjectData>();
+builder.Services.AddSingleton<IIssueData, IssueData>();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+//builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -48,12 +40,12 @@ app.UseStaticFiles();
 app.UseRouting();
 
 
-app.UseAuthentication();
-app.UseAuthorization();
+//app.UseAuthentication();
+//app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapRazorPages();
+//app.MapRazorPages();
 app.Run();

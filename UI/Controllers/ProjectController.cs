@@ -1,34 +1,27 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ProjectTrackerUI.Data;
-using ProjectTrackerUI.Models;
-using ProjectTrackerUI.Models.ViewModels;
+using ProjectTrackerDataAccess.Data;
 
 namespace ProjectTrackerUI.Controllers
 {
     //[Authorize]
     public class ProjectController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        private readonly ILogger<ProjectController> _logger;
-        public ProjectController(ILogger<ProjectController> logger, ApplicationDbContext db)
+        //private readonly ApplicationDbContext _db;
+        private readonly IProjectData _projectData;
+        private readonly IIssueData _data;
+        public ProjectController(IProjectData projectData, IIssueData data) 
         {
-            _logger = logger;
-            _db = db;
+            _projectData = projectData;
+            _data = data;
         }
 
         // GET: Project
         public async Task<IActionResult> Index()
-        {           
-            return View(await _db.Project.ToListAsync());
+        {
+            var results = await _projectData.GetProjects();
+            return View(results.ToList());
         }
 
         // GET: Project/Details/5
@@ -40,27 +33,19 @@ namespace ProjectTrackerUI.Controllers
                 return NotFound();
             }
 
-            var projects = await _db.Project
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var projects = await _projectData.GetProject(id.Value);
             if (projects == null)
             {
                 return NotFound();
             }
-            var issues = await _db.Issue
-                .Where(p => p.ProjectId == id)
-                .Select(x => x)   //new { x.Id, x.Title, x.Description, x.StatusId, x.AssignedToId, x.SprintId, x.SprintTypeId }
-                .ToListAsync();
 
-            //dynamic myModel = new ExpandoObject();
-            //myModel.Projects = projects;
-            //myModel.Issues = issues;
-
-            var tupleModel = new Tuple<Project, List<Issue>>(projects, issues);
-
-
+            var issues = await _data.GetIssuesByProjectId(id.Value);
+            var tupleModel = new Tuple<ProjectModel, List<IssueModel>>(projects, issues.ToList());
 
             return View(tupleModel);
         }
+
+
 
         // GET: Project/Create
         public IActionResult Create()
@@ -73,12 +58,12 @@ namespace ProjectTrackerUI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Active,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Project project)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Active,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] ProjectModel project)
         {
             if (ModelState.IsValid)
             {
-                _db.Add(project);
-                await _db.SaveChangesAsync();
+                await _projectData.InsertProject(project, project.CreatedBy);
+           
                 return RedirectToAction(nameof(Index));
             }
             return View(project);
@@ -92,7 +77,8 @@ namespace ProjectTrackerUI.Controllers
                 return NotFound();
             }
 
-            var projects = await _db.Project.FindAsync(id);
+            var projects = await _projectData.GetProject(id.Value);
+
             if (projects == null)
             {
                 return NotFound();
@@ -105,7 +91,7 @@ namespace ProjectTrackerUI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Active,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] Project project)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Active,CreatedBy,CreatedDate,ModifiedBy,ModifiedDate")] ProjectModel project)
         {
             if (id != project.Id)
             {
@@ -116,11 +102,7 @@ namespace ProjectTrackerUI.Controllers
             {
                 try
                 {
-                    project.ModifiedBy = "";
-                    project.ModifiedDate = DateTime.Now;
-
-                    _db.Update(project);
-                    await _db.SaveChangesAsync();
+                    await _projectData.UpdateProject(project, project.ModifiedBy);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -146,8 +128,8 @@ namespace ProjectTrackerUI.Controllers
                 return NotFound();
             }
 
-            var projects = await _db.Project
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var projects = await _projectData.GetProject(id.Value);
+               
             if (projects == null)
             {
                 return NotFound();
@@ -161,15 +143,23 @@ namespace ProjectTrackerUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var projects = await _db.Project.FindAsync(id);
-            _db.Project.Remove(projects);
-            await _db.SaveChangesAsync();
+            //var projects = await _projectData.GetProject(id);
+
+            await _projectData.DeleteProject(id);
+
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProjectExists(int id)
         {
-            return _db.Project.Any(e => e.Id == id);
+            var projects = _projectData.GetProject(id).Result;
+
+            if (projects == null)
+            {
+                return false;
+            }
+            return true;
+
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿
-@model Tuple<Project, List<Issue>>
+﻿@model Tuple<ProjectModel, List<IssueModel>>
 
 
 @*
@@ -96,7 +95,7 @@ body {font-family: Arial;}
            </thead>
            <tbody>
 
-             @foreach(Issue item in Model.Item2 )
+             @foreach(IssueModel item in Model.Item2 )
                {
                  <tr>
                       <td width="20%">
@@ -105,8 +104,8 @@ body {font-family: Arial;}
                        </td>
                        <td width="20%">@item.Id</td>
                        <td width="20%">@item.Title</td>
-                       <td width="20%">@item.StatusId</td>
-                       <td width="20%">@item.AssignedToId</td>
+                       <td width="20%">@item.Status</td>
+                       <td width="20%">@item.AssignedTo</td>
                        
                    </tr>
                }

@@ -3,15 +3,25 @@
 AS
 BEGIN
 	begin try
-		select Title
+		select Id
+			,Title
 			, Description
-			, (select Name from dbo.[Status] where id = statusId) as Status
-			, (select Name from dbo.[User] where id = assignedtoId) as AssignedTo
-			, (select Name from dbo.Sprint where id = sprintId) as Sprint
-			, (select Name from dbo.SprintType where id = sprintTypeId) as SprintType
-
+			, ProjectId
+			, (select Name from dbo.Project where Id = ProjectId) as Project
+			, StatusId
+			, (select Name from dbo.[Status] where id = StatusId) as Status
+			, AssignedToId
+			, (select Name from dbo.[User] where id = AssignedToId) as AssignedTo
+			, SprintId
+			, (select Name from dbo.Sprint where id = SprintId) as Sprint
+			, SprintTypeId
+			, (select Name from dbo.SprintType where id = SprintTypeId) as SprintType
+			, CreatedBy
+			, CreatedDate
+			, ModifiedBy
+			, ModifiedDate
 		from dbo.Issue
-		where projectId = @projectId
+		where ProjectId = @projectId
 
 
 	end try

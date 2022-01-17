@@ -21,8 +21,11 @@ public class IssueData : IIssueData
         return results.FirstOrDefault();
     }
 
-    public Task InsertIssue(IssueModel model, string userName) =>
-        _db.SaveData("dbo.spIssue_Insert", new
+    public Task InsertIssue(IssueModel model, string userName)
+    {
+        model.CreatedBy = userName;
+
+        return _db.SaveData("dbo.spIssue_Insert", new
         {
             model.Title,
             model.Description,
@@ -33,9 +36,14 @@ public class IssueData : IIssueData
             model.SprintTypeId,
             model.CreatedBy
         });
+    }
+            
 
-    public Task UpdateIssue(IssueModel model, string userName) =>
-        _db.SaveData("dbo.spIssue_Update", new
+    public Task UpdateIssue(IssueModel model, string userName)
+    {
+        model.ModifiedBy = userName;
+
+        return _db.SaveData("dbo.spIssue_Update", new
         {
             model.Id,
             model.Title,
@@ -45,8 +53,10 @@ public class IssueData : IIssueData
             model.AssignedToId,
             model.SprintId,
             model.SprintTypeId,
-            userName
+            model.ModifiedBy
         });
+    }
+       
 
     public Task DeleteIssue(int id) =>
         _db.SaveData("dbo.spIssue_Delete", new { id });

@@ -86,6 +86,11 @@
     <Build Include="StoredProcedures\spProject_Insert.sql" />
     <Build Include="StoredProcedures\spProject_Update.sql" />
     <Build Include="StoredProcedures\spProject_Delete.sql" />
+    <Build Include="StoredProcedures\spFeature_Delete.sql" />
+    <Build Include="StoredProcedures\spFeature_Get.sql" />
+    <Build Include="StoredProcedures\spFeature_GetAllByProjectId.sql" />
+    <Build Include="StoredProcedures\spFeature_Insert.sql" />
+    <Build Include="StoredProcedures\spFeature_Update.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Deployment\ProjectTracker.PostDeployment.sql" />

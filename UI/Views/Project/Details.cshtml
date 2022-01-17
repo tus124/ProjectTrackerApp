@@ -1,11 +1,5 @@
-﻿@model Tuple<ProjectModel, List<IssueModel>>
-
-
-@*
-@model ProjectTrackerUI.Models.Project
-@inject IEnumerable<ProjectTrackerUI.Models.Issue> Issues;*@
-
-
+﻿@using ProjectTrackerDataAccess.Models
+@model Tuple<ProjectModel, List<FeatureModel>, List<IssueModel>>
 
 @{
     ViewBag.Title = "Details";
@@ -57,7 +51,10 @@ body {font-family: Arial;}
         var i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("tabcontent");
         for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
+
+            tabcontent[i].style.display = "none";  
+
+                      
         }
         tablinks = document.getElementsByClassName("tablinks");
         for (i = 0; i < tablinks.length; i++) {
@@ -75,42 +72,73 @@ body {font-family: Arial;}
  
 </div>
 
-<div id="Features" class="tabcontent">
-  <h3>Features</h3>
-  <p>Test</p>
+<div id="Features" class="tabcontent" style="display:block">
+    <h3>Features</h3>
+    <table class="table table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th><a asp-controller="Feature" asp-action="Create" class="btn btn-primary">New Feature</a></th>
+                    <th>Title</th>
+                    <th>Priority</th>
+                    <th>Risk</th>
+                    <th>Classification</th>
+                    <th>Active</th>
+                </tr>
+                
+            </thead>
+            <tbody>
+
+                @foreach(FeatureModel item in Model.Item2 )
+                {
+                    <tr>
+                        <td width="20%">
+                            <a asp-controller="Feature" asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-primary">🖉</a>
+                            <a asp-controller="Feature" asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-danger">⌫</a>
+                        </td>
+                        <td width="20%">@item.Title</td>
+                        <td width="20%">@item.PriorityId</td>
+                        <td width="20%">@item.RiskId</td>
+                        <td width="20%">@item.ClassificationId</td>
+                        <td width="20%">@item.Active</td>
+               
+                       @*<td width="20%">  <a asp-controller="Feature" asp-action="Open" asp-route-Id="@item.Id" class="btn btn-primary">Open</a></td>*@
+                    </tr>
+                }
+            </tbody>
+    </table>
 </div>
 
-<div id="Issues" class="tabcontent">
-  <h3>Issues</h3>
-   <table class="table table-bordered table-striped" style="width:100%">
-           <thead>
-               <tr>
-                   <th><a asp-controller="Issue" asp-action="Create" class="btn btn-primary">+</a></th>
-                   <th>Id</th>
-                   <th>Title</th>
-                   <th>Status</th>
-                   <th>AssignedTo</th>
-               </tr>
+<div id="Issues" class="tabcontent" >
+    <h3>Issues</h3>
+    <table class="table table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th><a asp-controller="Issue" asp-action="Create" class="btn btn-primary">New Issue</a></th>
+                    @* <th>Id</th>*@
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>AssignedTo</th>
+                </tr>
                 
-           </thead>
-           <tbody>
+            </thead>
+            <tbody>
 
-             @foreach(IssueModel item in Model.Item2 )
-               {
-                 <tr>
-                      <td width="20%">
+                @foreach(IssueModel item in Model.Item3 )
+                {
+                    <tr>
+                        <td width="25%">
                             <a asp-controller="Issue" asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-primary">🖉</a>
                             <a asp-controller="Issue" asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-danger">⌫</a>
-                       </td>
-                       <td width="20%">@item.Id</td>
-                       <td width="20%">@item.Title</td>
-                       <td width="20%">@item.Status</td>
-                       <td width="20%">@item.AssignedTo</td>
+                        </td>
+                        @* <td width="20%">@item.Id</td>*@
+                        <td width="25%">@item.Title</td>
+                        <td width="25%">@item.Status</td>
+                        <td width="25%">@item.AssignedTo</td>
                        
-                   </tr>
-               }
-           </tbody>
-  </table>
+                    </tr>
+                }
+            </tbody>
+    </table>
 </div>
 
 <div id="UserStories" class="tabcontent">

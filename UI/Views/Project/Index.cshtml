@@ -28,8 +28,12 @@
                {
                    <tr>
                        <td width="20%">
-                            <a asp-controller="Project" asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-primary">🖉</a>
+                            <a asp-controller="Project" asp-action="Edit" asp-route-Id="@item.Id" class="btn btn-primary" >🖉</a>
                             <a asp-controller="Project" asp-action="Delete" asp-route-Id="@item.Id" class="btn btn-danger">⌫</a>
+                           @* <a href="@Url.Action("Edit", "Project")" class="btn-primary btn-primary">
+                                <i class="icon-pencil"></i>
+                                <span><strong>Edit</strong></span>
+                            </a>*@
                        </td>
                        <td width="20%">@item.Name</td>
                        <td width="20%">@item.Description</td>

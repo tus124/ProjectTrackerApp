@@ -1,8 +1,14 @@
 ﻿using DataAccessLayer.DbAccess;
 using Microsoft.EntityFrameworkCore;
 using ProjectTrackerDataAccess.Data;
+using Microsoft.Extensions.DependencyInjection;
+using ProjectTrackerUI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<ProjectTrackerUIContext>(options =>
+
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ProjectTrackerUIContext")));
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
 
@@ -10,6 +16,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
 builder.Services.AddSingleton<IProjectData, ProjectData>();
+builder.Services.AddSingleton<IFeatureData, FeatureData>();
 builder.Services.AddSingleton<IIssueData, IssueData>();
 
 

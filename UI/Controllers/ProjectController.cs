@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectTrackerDataAccess.Data;
+using ProjectTrackerDataAccess.Models;
 
 namespace ProjectTrackerUI.Controllers
 {
@@ -10,11 +11,13 @@ namespace ProjectTrackerUI.Controllers
     {
         //private readonly ApplicationDbContext _db;
         private readonly IProjectData _projectData;
-        private readonly IIssueData _data;
-        public ProjectController(IProjectData projectData, IIssueData data) 
+        private readonly IFeatureData _featureData;
+        private readonly IIssueData _issueData;
+        public ProjectController(IProjectData projectData, IFeatureData featureData, IIssueData issueData) 
         {
             _projectData = projectData;
-            _data = data;
+            _featureData = featureData;
+            _issueData = issueData;
         }
 
         // GET: Project
@@ -39,8 +42,9 @@ namespace ProjectTrackerUI.Controllers
                 return NotFound();
             }
 
-            var issues = await _data.GetIssuesByProjectId(id.Value);
-            var tupleModel = new Tuple<ProjectModel, List<IssueModel>>(projects, issues.ToList());
+            var features = await _featureData.GetFeaturesByProjectId(id.Value);
+            var issues = await _issueData.GetIssuesByProjectId(id.Value);
+            var tupleModel = new Tuple<ProjectModel, List<FeatureModel>, List<IssueModel>>(projects, features.ToList(), issues.ToList());
 
             return View(tupleModel);
         }
@@ -78,7 +82,7 @@ namespace ProjectTrackerUI.Controllers
             }
 
             var projects = await _projectData.GetProject(id.Value);
-
+            projects.ModifiedDate = DateTime.Now;
             if (projects == null)
             {
                 return NotFound();

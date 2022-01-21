@@ -91,6 +91,8 @@
     <Build Include="StoredProcedures\spFeature_GetAllByProjectId.sql" />
     <Build Include="StoredProcedures\spFeature_Insert.sql" />
     <Build Include="StoredProcedures\spFeature_Update.sql" />
+    <Build Include="StoredProcedures\spPriority_GetAllByProjectId.sql" />
+    <Build Include="StoredProcedures\spPriority_Get.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Deployment\ProjectTracker.PostDeployment.sql" />

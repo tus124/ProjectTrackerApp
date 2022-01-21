@@ -71,9 +71,16 @@ body {font-family: Arial;}
   <button class="tablinks" onclick="openTab(event, 'UserStories')">User Stories</button>
  
 </div>
+@*
+<div>
+    @await Component.InvokeAsync("Feature", new { ProjectId = Model.Item1.Id })
+</div>
+*@
+
 
 <div id="Features" class="tabcontent" style="display:block">
     <h3>Features</h3>
+    
     <table class="table table-bordered table-striped" style="width:100%">
             <thead>
                 <tr>
@@ -145,8 +152,13 @@ body {font-family: Arial;}
   <h3>User Stories</h3>
   <p>test</p>
 </div>
+<br />
+<br />
+
+
 
 <br />
+
 <div>
     
     <a asp-action="Index">Back to Project List</a>

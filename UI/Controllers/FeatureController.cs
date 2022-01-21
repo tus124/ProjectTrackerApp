@@ -1,21 +1,17 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using ProjectTrackerDataAccess.LookupTables.Data;
+using ProjectTrackerDataAccess.LookupTables.Models;
 using ProjectTrackerDataAccess.Models;
-using ProjectTrackerUI.Data;
 
 namespace ProjectTrackerUI.Controllers;
 public class FeatureController : Controller
 {
     private readonly IFeatureData _featureData;
-    public FeatureController(IFeatureData featureData)
+    private readonly IPriorityData _priorityData;
+    public FeatureController(IFeatureData featureData, IPriorityData priorityData)
     {
         _featureData = featureData;
+        _priorityData = priorityData;
     }
 
     // GET: Feature
@@ -73,10 +69,21 @@ public class FeatureController : Controller
         }
 
         var feature = await _featureData.GetFeature(id.Value);
+
         if (feature == null)
         {
             return NotFound();
         }
+
+
+        
+        var priorityList = await _priorityData.GetAll();
+
+        ViewBag.PriorityList = priorityList;
+        //var model = new ValueTuple<FeatureModel, List<PriorityModel>>(feature, priorityList.ToList());
+        
+
+
         return View(feature);
     }
 

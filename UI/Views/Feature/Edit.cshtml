@@ -1,12 +1,17 @@
-﻿@model ProjectTrackerDataAccess.Models.FeatureModel
+﻿@using ProjectTrackerDataAccess.Models;
+@using ProjectTrackerDataAccess.LookupTables.Models;
+
+@*@model ValueTuple<FeatureModel, List<PriorityModel>>*@
+@model FeatureModel;
 
 @{
     ViewData["Title"] = "Edit";
+
+    //FeatureModel Features = Model.Item1;
+    //List<PriorityModel> PriorityList = Model.Item2;
 }
 
-<h1>Edit</h1>
-
-<h4>Feature</h4>
+<h4> EditFeature</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -23,16 +28,34 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" hidden="hidden">
                 <label asp-for="ProjectId" class="control-label"></label>
                 <input asp-for="ProjectId" class="form-control" />
                 <span asp-validation-for="ProjectId" class="text-danger"></span>
             </div>
-            <div class="form-group">
+
+
+
+            <div class="form-group" >
                 <label asp-for="PriorityId" class="control-label"></label>
                 <input asp-for="PriorityId" class="form-control" />
                 <span asp-validation-for="PriorityId" class="text-danger"></span>
             </div>
+
+
+
+            <div class="form-group">
+                <label asp-for="PriorityId" class="control-label" ></label>
+                
+              @*  <select id="drpPriorityList" class="form-control" asp-for="PriorityId" 
+                    asp-items="@(new SelectList(@PriorityList, "Value", "Name"))"></select>*@
+               <select id="drpPriorityList" class="form-control" asp-for="PriorityId" 
+                    asp-items="@(new SelectList(ViewBag.PriorityList, "Value", "Name"))"></select>
+
+                <span asp-validation-for="PriorityId" class="text-danger"></span>
+            </div>
+
+
             <div class="form-group">
                 <label asp-for="RiskId" class="control-label"></label>
                 <input asp-for="RiskId" class="form-control" />
@@ -45,7 +68,8 @@
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Active" /> @Html.DisplayNameFor(model => model.Active)
+                    <input class="form-check-input" asp-for="Active" /> 
+                    @Html.DisplayNameFor(model => model.Active)
                 </label>
             </div>
             <div class="form-group">

@@ -1,24 +1,61 @@
-using DataAccessLayer.DbAccess;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using ProjectTrackerAPI;
+using ProjectTrackerAPI.Models;
+using System.Data.SqlClient;
+using Newtonsoft.Json;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
-builder.Services.AddSingleton<IIssueData, IssueData>();
+// Configure services
+builder.Services.AddSingleton<DAL>(new DAL("Server=(localdb)\\MSSQLLocalDB;Database=ProjectTracker;Integrated Security=true;"));   //InitialCatalog=ProjectTracker;
 
 var app = builder.Build();
 
-if(app.Environment.IsDevelopment())
+
+
+
+
+// Define your API endpoints
+
+app.MapGet("/execute-project-{procedureName}", async (HttpContext context, DAL dal) =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    var procedureName = context.Request.RouteValues["procedureName"].ToString();
 
-app.UseHttpsRedirection();
+    try
+    {
+        var results = dal.ExecuteStoredProcedureForProject(procedureName, null);
 
-app.ConfigureApi();
+        var output = JsonConvert.SerializeObject(results);
 
+        await context.Response.WriteAsync("Project Stored procedure executed successfully. Records count: " + results.Count + "\n");
+        await context.Response.WriteAsync(output);
+    }
+    catch (Exception ex)
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        await context.Response.WriteAsync($"Error executing project stored procedure: {ex.Message}");
+    }
+});
+
+
+app.MapPost("/execute-{procedureName}", async (HttpContext context, DAL dal) =>
+{
+    var procedureName = context.Request.RouteValues["procedureName"].ToString();
+    var parameters = await context.Request.ReadFromJsonAsync<SqlParameter[]>();
+
+    try
+    {
+        dal.ExecuteStoredProcedure(procedureName, parameters);
+        await context.Response.WriteAsync("Stored procedure executed successfully.");
+    }
+    catch (Exception ex)
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        await context.Response.WriteAsync($"Error executing stored procedure: {ex.Message}");
+    }
+});
 
 app.Run();

@@ -1,10 +1,19 @@
 ﻿using System.Data;
 using System.Reflection;
+using System.Text;
 
 namespace ProjectTrackerAPI;
 
 public static class Extensions
 {
+    public static Stream ToStream(this string str)
+    {
+        byte[] byteArray = Encoding.UTF8.GetBytes(str);
+        MemoryStream stream = new MemoryStream(byteArray);
+
+        return stream;
+    }
+
     public static List<T> DataReaderMapToList<T>(this IDataReader dr)
     {
         List<T> list = new List<T>();
